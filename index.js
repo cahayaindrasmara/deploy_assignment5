@@ -171,21 +171,18 @@ function generateRows(books) {
   } else {
 
     //looping books, untuk setiap book, buat row seperti ini:
-    <tr class="book-item">
-      <td class="px-6 py-4 border-b">${books.title}</td>
-      <td class="px-6 py-4 border-b">${books.author}</td>
-      <td class="px-6 py-4 border-b">${books.year}</td>
-      <td class="px-6 py-4 border-b">${books.quantity}</td>
-      <td class="px-6 py-4 border-b text-center">
-        <button class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="handleClickEditButton(${books.id})">Edit</button>
-        <button class="inline-block bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="handleClickDeleteButton(${books.id})">Hapus</button>
-      </td>
-    </tr>
-    //Jangan lupa untuk ganti BookId dengan id dari book yang sedang di looping
-    //simpan row yang dibuat ke variabel rows
-
-
-    // TODO: answer here
+    books.forEach((book) => {
+      rows += `<tr class="book-item">
+        <td class="px-6 py-4 border-b">${book.title}</td>
+        <td class="px-6 py-4 border-b">${book.author}</td>
+        <td class="px-6 py-4 border-b">${book.year}</td>
+        <td class="px-6 py-4 border-b">${book.quantity}</td>
+        <td class="px-6 py-4 border-b text-center">
+          <button class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="handleClickEditButton(${book.id})">Edit</button>
+          <button class="inline-block bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="handleClickDeleteButton(${book.id})">Hapus</button>  
+        </td>
+      </tr>`;
+    });
   }
   return rows;
 }
@@ -264,10 +261,10 @@ async function addBook(book) {
       tambahkan buku baru ke http://localhost:3333/books dengan method POST
       body yang dikirim adalah book yang dikirimkan sebagai parameter function
     */
-    const response = await fetch("ttp://localhost:3333/books", {
+    const response = await fetch("http://localhost:3333/books", {
       method: "POST",
       headers: {
-        "Content-Type": "application.json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(book)
     })
@@ -278,7 +275,7 @@ async function addBook(book) {
     }
 
     const addedBook = await response.json();
-    books.push(addBook);
+    books.push(addedBook);
   } catch (error) {
     console.log(error);
     console.log('Terjadi kesalahan saat menambah buku');
@@ -294,7 +291,7 @@ async function editBook(book) {
     const response = await fetch(`http://localhost:3333/books/${currentBook.id}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application.json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(book)
     })
@@ -319,7 +316,7 @@ async function deleteBook(bookId) {
         "Content-Type": "application/json"
       }
     })
-    if (!response) {
+    if (!response.ok) {
       throw new Error("Gagal mengahapus buku");
 
     }
